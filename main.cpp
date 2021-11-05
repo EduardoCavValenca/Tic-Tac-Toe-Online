@@ -12,6 +12,14 @@ int main() {
     );
     window.setPosition(sf::Vector2i(100, 50));
 
+    // Importando icone da aplicacao
+    sf::Image icon;
+    if(!icon.loadFromFile("icon.png")) {
+        std::cout << "vixi" << std::endl;
+    }
+
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
     // Carregando fonte
     sf::Font font;
     if(!font.loadFromFile("Roboto-Regular.ttf")) {
