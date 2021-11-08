@@ -1,39 +1,48 @@
-# CC = g++
-# CFLAGS = -Wall -g
- 
-# # ****************************************************
-# # Targets needed to bring the executable up to date
- 
-# main: main.o TelaLogin.o 
-#     $(CC) $(CFLAGS) -o main main.o TelaLogin.o
- 
-# # The main.o target can be written more simply
- 
-# main.o: main.cpp Point.h Square.h
-#     $(CC) $(CFLAGS) -c main.cpp
- 
-# Point.o: Point.h
- 
-# Square.o: Square.h Point.h
-
-
-
 CC = g++
 
-CFLAGS =-g -WAll
+CFLAGS =-g -Wall
+GAMEFLAGS =  -Wall -lsfml-graphics -lsfml-window -lsfml-system -pthread
 
+all: jogo_da_velha servidor
 
-all: jogo_da_velha
+TelaAguardo.o: telas/TelaAguardo/TelaAguardo.cpp
+	$(CC) $(CFLAGS) -c $^
 
-%.o: %.c %.h
+TelaDerrota.o: telas/TelaDerrota/TelaDerrota.cpp
+	$(CC) $(CFLAGS) -c $^
+
+TelaDisconnect.o: telas/TelaDisconnect/TelaDisconnect.cpp
+	$(CC) $(CFLAGS) -c $^
+
+TelaInstrucao.o: telas/TelaInstrucao/TelaInstrucao.cpp
+	$(CC) $(CFLAGS) -c $^
+
+TelaJogo.o: telas/TelaJogo/TelaJogo.cpp
+	$(CC) $(CFLAGS) -c $^
+
+TelaLogin.o: telas/TelaLogin/TelaLogin.cpp
+	$(CC) $(CFLAGS) -c $^
+
+TelaVitoria.o: telas/TelaVitoria/TelaVitoria.cpp
+	$(CC) $(CFLAGS) -c $^
+
+common.o: common/common.cpp
+	$(CC) $(CFLAGS) -c $^
+
+Cliente.o: Cliente/Cliente.cpp
+	$(CC) $(CFLAGS) -c $^
+
+main.o: main.cpp
 	$(CC) $(CFLAGS) -c $^
 
 jogo_da_velha: main.o TelaLogin.o TelaAguardo.o TelaDisconnect.o TelaDerrota.o TelaVitoria.o TelaJogo.o TelaInstrucao.o Cliente.o common.o
-	g++ main.o TelaLogin.o TelaAguardo.o TelaDisconnect.o TelaDerrota.o TelaVitoria.o TelaJogo.o TelaInstrucao.o Cliente.o common.o -Wall -o jogo_da_velha -lsfml-graphics -lsfml-window -lsfml-system -pthread
+	$(CC) main.o TelaLogin.o TelaAguardo.o TelaDisconnect.o TelaDerrota.o TelaVitoria.o TelaJogo.o TelaInstrucao.o Cliente.o common.o $(GAMEFLAGS) -o jogo_da_velha 
+
+servidor: Servidor/Servidor.cpp common.o
+	$(CC) Servidor/Servidor.cpp common.o -Wall -pthread -o servidor
 
 clean:
-	rm *.o jogo_da_velha
+	rm *.o jogo_da_velha servidor
 
 run: jogo_da_velha
 	./jogo_da_velha
-

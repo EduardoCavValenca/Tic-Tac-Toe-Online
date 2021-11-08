@@ -8,7 +8,7 @@ using namespace std;
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <sstream>
-#include "Cliente.h"
+#include "../../Cliente/Cliente.h"
 
 class TelaJogo : public sf::Drawable
 {

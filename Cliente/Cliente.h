@@ -1,6 +1,6 @@
 #ifndef CLIENTE_H
 #define CLIENTE_H
-#include "common.h"
+#include "../common/common.h"
 #include <thread>
 
 class Cliente {

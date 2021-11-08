@@ -1,6 +1,6 @@
 #ifndef SERVIDOR_H
 #define SERVIDOR_H
-#include "common.h"
+#include "../common/common.h"
 
 void *envia_tabuleiro(void *);
 void *recebe_tabuleiro_player1(void *);

@@ -1,14 +1,13 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "TelaLogin.h"
-#include "TelaAguardo.h"
-#include "TelaDisconnect.h"
-#include "TelaDerrota.h"
-#include "TelaVitoria.h"
-#include "TelaJogo.h"
-#include "TelaInstrucao.h"
-#include "Cliente.h"
-
+#include "telas/TelaLogin/TelaLogin.h"
+#include "telas/TelaAguardo/TelaAguardo.h"
+#include "telas/TelaDisconnect/TelaDisconnect.h"
+#include "telas/TelaDerrota/TelaDerrota.h"
+#include "telas/TelaVitoria/TelaVitoria.h"
+#include "telas/TelaJogo/TelaJogo.h"
+#include "telas/TelaInstrucao/TelaInstrucao.h"
+#include "Cliente/Cliente.h"
 
 int verifica_vitoria(char vitoria, Cliente*player)
 {
@@ -44,7 +43,6 @@ int main(int argc, char *argv[])
     std::thread envia_tabuleiro;
     bool wait_for_player2 = false;
     bool iniciou_jogo = false;
-    int turno = 0;
     char verifica_vitoria_char = '-';
     char sleep;
     int count_sleep=0;
