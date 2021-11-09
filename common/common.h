@@ -14,7 +14,6 @@
 
 #define SERVER_PORT 17000
 #define BUFFER_SIZE 256
-#define SERVER_BACKLOG 10
 
 typedef struct sockaddr SA;
 typedef struct sockaddr_in SAIN;

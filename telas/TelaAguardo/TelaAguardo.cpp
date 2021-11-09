@@ -8,10 +8,9 @@
 
 #define BACKGROUND_COLOR sf::Color(20, 189, 172)
 
-
-
 TelaAguardo::TelaAguardo()
 {
+    //Counter para realizar animacao da pagina
     this->counter = 0;
 
     sf::FloatRect bounds;
@@ -22,6 +21,7 @@ TelaAguardo::TelaAguardo()
         std::cout << "Erro ao carregar fonte" << std::endl;
     }
 
+    //Seta texto de aguardo
     this->texto_aguardo.setFont(this->fonte);
     this->texto_aguardo.setString("Aguardando segundo jogador");
     this->texto_aguardo.setCharacterSize(TEXT_SIZE); // em px
@@ -32,7 +32,7 @@ TelaAguardo::TelaAguardo()
     this->texto_aguardo.setPosition(sf::Vector2f((float) (400.0 - (bounds.width)*scale.x/ 2.0), 200 -(bounds.height)*scale.y/2));
 
    
-    
+    //Carrega a textura e seta o botao
     this->textura_VoltarButton.loadFromFile("texturas/VoltarButton.png");
 
     this->sprite_VoltarButton.setTexture(this->textura_VoltarButton);
@@ -42,16 +42,16 @@ TelaAguardo::TelaAguardo()
     this->sprite_VoltarButton.setOrigin(sf::Vector2f((float) ((bounds.width)*scale.x/ 2.0),(bounds.height)*scale.y/2));
     this->sprite_VoltarButton.setPosition(sf::Vector2f((float) 390.0 , 400 ));
 
-
+    //Defini Fundo
     this->textura_background.loadFromFile("texturas/Fundo.png");
 
     this->sprite_background.setTexture(this->textura_background);
-    // this->sprite_instrucoesbutton.setScale(sf::Vector2f(0.5,0.5));
     bounds = this->sprite_background.getLocalBounds();
     scale = this->sprite_background.getScale();
     this->sprite_background.setPosition(sf::Vector2f(0,0));
 }
 
+//Caso jogador clique em voltar
 int TelaAguardo::mouseclique(sf::Vector2i Mouseposition)
 {
     sf::Vector2f MouseCoord = (sf::Vector2f) Mouseposition;
@@ -67,12 +67,12 @@ int TelaAguardo::mouseclique(sf::Vector2i Mouseposition)
     return 3;
 }
 
+//Botao responsivo
 void TelaAguardo::ReactToMouse(sf::Vector2i Mouseposition)
 {
     sf::Vector2f MouseCoord = (sf::Vector2f) Mouseposition;
 
     this->sprite_VoltarButton.setScale(0.9,0.9);
-
 
    if(MouseCoord.x >300 && MouseCoord.x < 500)
     {
@@ -83,6 +83,7 @@ void TelaAguardo::ReactToMouse(sf::Vector2i Mouseposition)
     }
 }
 
+// Função de animação do texto de espera
 void TelaAguardo::change_text()
 {
     this->counter+=1;
@@ -97,10 +98,9 @@ void TelaAguardo::change_text()
     }
 }
 
+// Desenhando tela de aguardo
 void TelaAguardo::draw(sf::RenderTarget& target, sf::RenderStates state) const
 {
-    
-
     target.draw(this->sprite_background);
     target.draw(this->texto_aguardo);
     target.draw(this->sprite_VoltarButton);

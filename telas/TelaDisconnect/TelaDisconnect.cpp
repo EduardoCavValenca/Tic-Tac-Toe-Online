@@ -8,11 +8,8 @@
 
 #define BACKGROUND_COLOR sf::Color(20, 189, 172)
 
-
-
 TelaDisconnect::TelaDisconnect()
 {
-
     sf::FloatRect bounds;
     sf::Vector2f scale;
 
@@ -21,6 +18,7 @@ TelaDisconnect::TelaDisconnect()
         std::cout << "Erro ao carregar fonte" << std::endl;
     }
 
+    //Defini texto de disconnect
     this->texto_disconnect.setFont(this->fonte);
     this->texto_disconnect.setString("O outro jogador se desconectou");
     this->texto_disconnect.setCharacterSize(TEXT_SIZE); // em px
@@ -30,21 +28,16 @@ TelaDisconnect::TelaDisconnect()
     scale = this->texto_disconnect.getScale();
     this->texto_disconnect.setPosition(sf::Vector2f((float) (400.0 - (bounds.width)*scale.x/ 2.0), 200 -(bounds.height)*scale.y/2));
 
-
-
-
+    //Defini o fundo da tela
     this->textura_background.loadFromFile("texturas/Fundo.png");
 
     this->sprite_background.setTexture(this->textura_background);
-    // this->sprite_instrucoesbutton.setScale(sf::Vector2f(0.5,0.5));
     bounds = this->sprite_background.getLocalBounds();
     scale = this->sprite_background.getScale();
     this->sprite_background.setPosition(sf::Vector2f(0,0));
 }
 
-
-
-
+// Desenha tela de desconexão
 void TelaDisconnect::draw(sf::RenderTarget& target, sf::RenderStates state) const
 {
     target.draw(this->sprite_background);

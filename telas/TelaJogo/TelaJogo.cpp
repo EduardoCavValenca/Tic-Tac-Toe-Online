@@ -10,10 +10,9 @@ using namespace std;
 
 #define BACKGROUND_COLOR sf::Color(20, 189, 172)
 
-
-
 TelaJogo::TelaJogo(char tipo_jogador, string nome_player, string nome_adversario)
 {
+    //Defini variaveis na classe
     this->nome_player=nome_player;
     this->nome_adversario=nome_adversario;
     this->tipo_jogador=tipo_jogador;
@@ -29,9 +28,11 @@ TelaJogo::TelaJogo(char tipo_jogador, string nome_player, string nome_adversario
         }
     }
 
+    //Carrega textura de X e O
     this->textura_X.loadFromFile("texturas/X.png");
     this->textura_O.loadFromFile("texturas/O.png");
 
+    //Caso empate
     this->textura_vazio.loadFromFile("texturas/Vazio.png");
 
     sf::FloatRect bounds;
@@ -42,6 +43,7 @@ TelaJogo::TelaJogo(char tipo_jogador, string nome_player, string nome_adversario
         std::cout << "Erro ao carregar fonte" << std::endl;
     }
 
+    //Defini texto rodada
     this->texto_rodada.setFont(this->fonte);
     this->texto_rodada.setString("Rodada: "+to_string(this->num_rodadas));
     this->texto_rodada.setCharacterSize(TEXT_SIZE); // em px
@@ -51,34 +53,35 @@ TelaJogo::TelaJogo(char tipo_jogador, string nome_player, string nome_adversario
     scale = this->texto_rodada.getScale();
     this->texto_rodada.setPosition(sf::Vector2f(20.0,10.0));
 
+    //Defini texto turno
     this->texto_turno.setFont(this->fonte);
-    // this->texto_turno.setString("Turno: "+to_string(this->num_empates));
     this->texto_turno.setString("Turno: "+this->nome_turno);
     this->texto_turno.setCharacterSize(TEXT_SIZE); // em px
     this->texto_turno.setFillColor(TEXT_COLOR);
     this->texto_turno.setPosition(sf::Vector2f(20.0,50.0));
 
 
-   
+    //Defini texto imagem do grid do jogo
     this->textura_grid.loadFromFile("texturas/Grid.png");        
 
     this->sprite_grid.setTexture(this->textura_grid);
-    // this->sprite_playbutton.setScale(sf::Vector2f(0.5,0.5));
     bounds = this->sprite_grid.getLocalBounds();
     scale = this->sprite_grid.getScale();
     this->sprite_grid.setOrigin(sf::Vector2f((float) ((bounds.width)*scale.x/ 2.0),(bounds.height)*scale.y/2));
     this->sprite_grid.setPosition(sf::Vector2f((float) 400.0 , 330 ));
 
 
+    //Pinta o fundo da tela
     this->textura_background.loadFromFile("texturas/Fundo.png");
 
     this->sprite_background.setTexture(this->textura_background);
-    // this->sprite_instrucoesbutton.setScale(sf::Vector2f(0.5,0.5));
     bounds = this->sprite_background.getLocalBounds();
     scale = this->sprite_background.getScale();
     this->sprite_background.setPosition(sf::Vector2f(0,0));
 }
 
+
+//Desenha na tela
 void TelaJogo::draw(sf::RenderTarget& target, sf::RenderStates state) const
 {
     target.draw(this->sprite_background);
@@ -99,6 +102,7 @@ void TelaJogo::draw(sf::RenderTarget& target, sf::RenderStates state) const
 
 }
 
+//Verifica posicao do clique e se pode clicar nesse turno
 int TelaJogo::mouseclique(sf::Vector2i Mouseposition, Cliente *player, int turno)
 {
     if(player->tipo_jogador == 'X')
@@ -174,10 +178,11 @@ int TelaJogo::mouseclique(sf::Vector2i Mouseposition, Cliente *player, int turno
     return 0;
 }
 
+//Caso possa marcar
  int TelaJogo::marca_posicao(int x, int y, Cliente *player)
  { 
 
-    if( marcado[x][y] == '-')
+    if( marcado[x][y] == '-') //Caso a posicao seja valida
     {
         this->texto_turno.setString("Turno: "+this->nome_turno);
 
@@ -190,6 +195,8 @@ int TelaJogo::mouseclique(sf::Vector2i Mouseposition, Cliente *player, int turno
     return 0;
 }
 
+
+// Desenha novos marcacoes (X e O) na tela
 char TelaJogo::set_tabuleiro(Cliente *player)
 {
     int i,j;
@@ -204,23 +211,24 @@ char TelaJogo::set_tabuleiro(Cliente *player)
             if(player->tabuleiro[i][j] == '-') //Nov tabuleiro
                 count_novo_jogo++;
 
-            if(player->tabuleiro[i][j] == 'X')
+            if(player->tabuleiro[i][j] == 'X') //Caso caracter recebido seja um X
             {
                 this->sprite_posicoes[i][j].setTexture(this->textura_X);
                 this->sprite_posicoes[i][j].setPosition(sf::Vector2f((float) 205.0+j*140 , 140+135*i ));
                 count_vitoria_X++;
             }
 
-            if(player->tabuleiro[i][j] == 'O')
+            if(player->tabuleiro[i][j] == 'O') //Caso caracter recebido seja um O
             {
                 this->sprite_posicoes[i][j].setTexture(this->textura_O);
                 this->sprite_posicoes[i][j].setPosition(sf::Vector2f((float) 205.0+j*140 , 140+135*i ));
                 count_vitoria_O++;
             }
-            this->marcado[i][j]=player->tabuleiro[i][j];
+            this->marcado[i][j]=player->tabuleiro[i][j]; //Atualiza matriz da classe
         }
     }
 
+    //Caso de empate reseta tabuleiro
     if(count_novo_jogo==9)
     {
         for(i=0;i<3;i++)
@@ -233,12 +241,12 @@ char TelaJogo::set_tabuleiro(Cliente *player)
         }
     }
 
-
+    // Em caso de vitória de um jogador, o servidor envia um tabuleiro com todas as
+    // posições preenchidas com o tipo do jogador vencedor (X ou O)
     if(count_vitoria_X == 9)
     {
         return 'X';    
     }
-
 
     if(count_vitoria_O == 9)
     {
@@ -246,17 +254,18 @@ char TelaJogo::set_tabuleiro(Cliente *player)
     }
 
     return '-';
-
 }
 
+// Muda o nome de quem é o turno na tela
 void TelaJogo::set_nome_turno(int turno)
 {
     this->num_rodadas = turno+1;
     this->texto_rodada.setString("Rodada: "+to_string(this->num_rodadas));
 
+    // Quem joga com X joga em turnos pares; o contrário para quem jogo com O
     if(this->tipo_jogador == 'X')
     {
-        if(turno%2==0) {
+        if(turno%2 == 0) {
             this->nome_turno = this->nome_player;
         }
         else {
@@ -266,7 +275,7 @@ void TelaJogo::set_nome_turno(int turno)
 
     if(this->tipo_jogador == 'O')
     {
-        if(turno%2==0) {
+        if(turno%2 == 0) {
             this->nome_turno = this->nome_adversario;
         }
         else {
