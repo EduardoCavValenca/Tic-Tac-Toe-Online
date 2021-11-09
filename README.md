@@ -6,7 +6,7 @@ Para compilar o programa, digite no terminal:
 ```
 make
 ```
-Para executar o programa, digite:
+Para executar o programa do jogo (cliente), digite:
 ```
 make run
 ```
@@ -14,6 +14,12 @@ Para apagar os arquivos criados pelo comando ```make```, digite:
 ```
 make clean
 ```
+Para rodar o servidor, digite:
+```
+./servidor
+```
+
+Lembre-se de rodar o servidor antes do cliente!
 
 ## Requisitos
 g++:
