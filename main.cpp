@@ -9,33 +9,6 @@
 #include "telas/TelaInstrucao/TelaInstrucao.h"
 #include "Cliente/Cliente.h"
 
-int verifica_vitoria(char vitoria, Cliente*player)
-{
-    
-    if(vitoria == 'X' && player->tipo_jogador == 'X')
-    {
-        return 5;
-    }    
-
-    if(vitoria == 'X' && player->tipo_jogador == 'O')
-    {
-        return 6;
-    }   
-
-    if(vitoria == 'O' && player->tipo_jogador == 'X')
-    {
-        return 6;
-    }
-
-    if(vitoria == 'O' && player->tipo_jogador == 'O')
-    {
-        return 5;
-    }   
-
-    return 4;
-}
-
-
 int main(int argc, char *argv[])
 {
     // Criando variáveis uteis para a lógica do jogo
@@ -52,9 +25,9 @@ int main(int argc, char *argv[])
     Cliente* player = new Cliente(Nome);
 
     // Criando threads e variáveis uteis para manipulação do player/cliente
-    std::thread aguarda_player2;
-    std::thread recebe_tabuleiro;
-    std::thread envia_tabuleiro;
+    std::thread thread_aguarda_player2;
+    std::thread thread_recebe_tabuleiro;
+    std::thread thread_envia_tabuleiro;
     bool wait_for_player2 = false;
     bool iniciou_jogo = false;
 
@@ -100,7 +73,6 @@ int main(int argc, char *argv[])
     // Rodar o codigo enquanto a janela estiver aberta (game loop)
     while(window.isOpen()) 
     {
-
         // Verificar todos o eventos que ocorreram durante o ultimo loop
         sf::Event event;
 
@@ -110,6 +82,8 @@ int main(int argc, char *argv[])
             if(event.type == sf::Event::Closed) {
                 std::cout << "Execucao finalizada" << std::endl;
                 window.close();
+                //Faz com que termine as thread de envio e recebimento
+                player->isRunning=false; 
             }
             // Verificar clique do mouse (botão esquerdo)
             if(event.type == sf::Event::MouseButtonPressed)
@@ -121,6 +95,11 @@ int main(int argc, char *argv[])
                     Mouse_clique_position.y = event.mouseButton.y;
                 }
             }
+        }
+        
+        // Garantir que o gameloop acabe ao clicar em fechar
+        if(!window.isOpen()) {
+            break;
         }
 
         /** Tratamento dos dados dos eventos **/
@@ -141,7 +120,7 @@ int main(int argc, char *argv[])
         // Cria thread para aguardar conexão do player 2
         if(JanelaAtual==3 && !wait_for_player2)
         {
-            aguarda_player2 = player->thread_aguarda_jogador();
+            thread_aguarda_player2 = player->thread_aguarda_jogador();
             wait_for_player2=true;
         }
 
@@ -159,12 +138,17 @@ int main(int argc, char *argv[])
             tela_jogo = new TelaJogo(player->tipo_jogador, player->Nome, player->nome_adversario);
 
             // Inicialiando threads
-            envia_tabuleiro = player->thread_envia_tabuleiro();
-            recebe_tabuleiro = player->thread_recebe_tabuleiro();
+            thread_envia_tabuleiro = player->thread_envia_tabuleiro();
+            thread_recebe_tabuleiro = player->thread_recebe_tabuleiro();
 
             iniciou_jogo = true;
         }
         
+        //Nao atualiza janela, e finaliza o programa
+        if(player->adversario_desconectou) {
+            JanelaAtual = 7;
+        }
+
         // Verificando qual janela deve ser desenhada na tela e tratando dados
         switch(JanelaAtual)
         {
@@ -229,15 +213,17 @@ int main(int argc, char *argv[])
                 window.draw(*tela_jogo);
 
                 // Verificando vitória e dando sleep na tela
-                sleep = verifica_vitoria(verifica_vitoria_char, player);
-                if(player->turno > 50 && sleep!=5 && sleep !=6)
+                sleep = player->verifica_vitoria(verifica_vitoria_char, player);
+
+                //Se um dos jogadores se desconecta
+                if(player->turno > 100 && sleep!=5 && sleep !=6)
                 {
                     JanelaAtual = 7;
                 }
-                if(sleep==5 || sleep ==6 )
+                if(sleep==5 || sleep ==6 ) //Se alguem ganhou
                 {
                    count_sleep++;
-                   if(count_sleep==40)
+                   if(count_sleep==300) //Delay
                    {
                        JanelaAtual = sleep;
                    }
@@ -267,5 +253,31 @@ int main(int argc, char *argv[])
         // Exibe a janela
         window.display();
     }
+
+    // Jogo finalizado
+    // Indicando às threads recebe_tabuleiro e envia_tabuleiro que podem acabar
+    player->isRunning = false;
+    
+    //Se thread estao ativas, aguarda ate finalizarem
+    if(thread_aguarda_player2.joinable()) {
+        thread_aguarda_player2.join();
+    }
+    if(thread_recebe_tabuleiro.joinable()) {
+        thread_recebe_tabuleiro.join();
+    }
+    if(thread_envia_tabuleiro.joinable()) {
+        thread_envia_tabuleiro.join();
+    }
+
+    // Liberando espaços de memória
+    delete player;
+    delete tela_login;
+    delete tela_instrucao;
+    delete tela_aguardo;
+    delete tela_jogo;
+    delete tela_vitoria;
+    delete tela_derrota;
+    delete tela_disconnect;
+
     return 0;
 }

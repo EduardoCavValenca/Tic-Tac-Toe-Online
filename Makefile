@@ -38,8 +38,8 @@ main.o: main.cpp
 jogo_da_velha: main.o TelaLogin.o TelaAguardo.o TelaDisconnect.o TelaDerrota.o TelaVitoria.o TelaJogo.o TelaInstrucao.o Cliente.o common.o
 	$(CC) main.o TelaLogin.o TelaAguardo.o TelaDisconnect.o TelaDerrota.o TelaVitoria.o TelaJogo.o TelaInstrucao.o Cliente.o common.o $(GAMEFLAGS) -o jogo_da_velha 
 
-servidor: Servidor/Servidor.cpp common.o
-	$(CC) Servidor/Servidor.cpp common.o -Wall -pthread -o servidor
+servidor: Servidor/servidor_main.cpp Servidor/Servidor.cpp common.o
+	$(CC) Servidor/servidor_main.cpp Servidor/Servidor.cpp common.o -Wall -pthread -o servidor
 
 clean:
 	rm *.o jogo_da_velha servidor
